@@ -18,10 +18,10 @@ func homepage(w http.ResponseWriter, r *http.Request) {
 
 func myRouter() {
 	r := mux.NewRouter().StrictSlash(true)
+	r.HandleFunc("/", homepage).Methods("GET")
 	r.Use(middleware)
-	r.HandleFunc("/", homepage)
 	r.HandleFunc("/link", createLink).Methods("POST")
-	r.HandleFunc("/link/{hash:-?[0-9a-z]+}", retrieveLink)
+	r.HandleFunc("/link/{hash:-?[0-9a-z]+}", retrieveLink).Methods("GET")
 	log.Fatal(http.ListenAndServe(":10000", r))
 }
 
