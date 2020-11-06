@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -18,11 +19,14 @@ func homepage(w http.ResponseWriter, r *http.Request) {
 
 func myRouter() {
 	r := mux.NewRouter().StrictSlash(true)
-	r.HandleFunc("/", homepage).Methods("GET")
+	r.HandleFunc("/", homepage).Methods("GET", "OPTIONS")
 	r.Use(middleware)
-	r.HandleFunc("/link", createLink).Methods("POST")
-	r.HandleFunc("/link/{hash:-?[0-9a-z]+}", retrieveLink).Methods("GET")
-	log.Fatal(http.ListenAndServe(":10000", r))
+	r.HandleFunc("/link", createLink).Methods("POST", "OPTIONS")
+	r.HandleFunc("/link/{hash:-?[0-9a-z]+}", retrieveLink).Methods("GET", "OPTIONS")
+	log.Fatal(http.ListenAndServe(":10000", handlers.CORS(handlers.AllowedHeaders(
+		[]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+		handlers.AllowedOrigins([]string{"*"}))(r)))
 }
 
 func main() {
