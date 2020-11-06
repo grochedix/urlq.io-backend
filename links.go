@@ -21,9 +21,7 @@ type Link struct {
 }
 
 func createLink(w http.ResponseWriter, r *http.Request) {
-	if !PROD {
-		fmt.Println("request: creation link")
-	}
+
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var obj Link
 	json.Unmarshal(reqBody, &obj)
@@ -34,16 +32,19 @@ func createLink(w http.ResponseWriter, r *http.Request) {
 		panic("Creation did not work.")
 	}
 	json.NewEncoder(w).Encode(obj)
+	if !PROD {
+		fmt.Println("request: creation link")
+	}
 	return
 }
 
 func retrieveLink(w http.ResponseWriter, r *http.Request) {
-	if !PROD {
-		fmt.Println("request: retrieve link")
-	}
 	var obj Link = Link{Hash: mux.Vars(r)["hash"]}
 	DB.Take(&obj, "hash = ?", obj.Hash)
 	json.NewEncoder(w).Encode(obj)
+	if !PROD {
+		fmt.Println("request: retrieve link")
+	}
 	return
 }
 

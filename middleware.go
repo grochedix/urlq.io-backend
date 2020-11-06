@@ -32,7 +32,7 @@ func checkIPaddr(r *http.Request) (access bool) {
 		DB.Create(&obj)
 		access = true
 	} else {
-		if time.Now().Sub(obj.LastRequest) > 2*time.Second {
+		if time.Now().Sub(obj.LastRequest) > 1*time.Second {
 			access = true
 		}
 		obj.LastRequest = time.Now()
