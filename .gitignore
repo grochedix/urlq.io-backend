@@ -1,0 +1,4 @@
+*.db
+*.exe
+*.code-workspace
+/frontend/
