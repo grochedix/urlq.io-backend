@@ -1,33 +1,56 @@
 package main
 
 import (
+	"errors"
+	"fmt"
+	"os"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
-// PROD should be set to true if production, false if devlopment.
+// PROD : set to true if production, false if development.
 const PROD bool = false
 
-// MigrationDone indicates if migrations needs to be done.
+// MigrationDone : set to false if migrations needs to be done.
 var MigrationDone bool = true
 
-// DB is the var for db
-var DB *gorm.DB
+// database : representing the db instance.
+var database *gorm.DB
 
-// DBerr is the var indicating any problem connecting to the DB
+// DBerr : indicates any problem when connecting to the database.
 var DBerr error
 
+// connectDB : connect to the DB instance.
 func connectDB() {
 	if PROD {
-
+		// connecting to PROD database.
 	} else {
-		// In development, we'll be using a sqlite db.
-		DB, DBerr = gorm.Open(sqlite.Open("goAPI.db"), &gorm.Config{})
+		if _, err := os.Stat("goAPI.db"); err == nil {
+			if !PROD {
+				fmt.Println("Connecting to the database...")
+			}
+			database, DBerr = gorm.Open(sqlite.Open("goAPI.db"), &gorm.Config{})
+			if !PROD && DBerr == nil {
+				fmt.Println("OK!")
+			}
+		} else if os.IsNotExist(err) {
+			fmt.Println("Creating database.")
+			database, DBerr = gorm.Open(sqlite.Open("goAPI.db"), &gorm.Config{})
+			MigrationDone = false
+			if DBerr != nil {
+				fmt.Println(DBerr)
+			}
+		} else {
+			DBerr = errors.New("a problem occured while trying to connect to the database, stopping the server")
+		}
 	}
 	return
 }
 
+// migrate : create the models in the DB instance.
 func migrate() error {
-	err := DB.AutoMigrate(&Link{}, &RequestIP{})
+	fmt.Println("Starting migration...")
+	err := database.AutoMigrate(&Link{}, &RequestIP{})
 	return err
 }

@@ -11,12 +11,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// homepage : test function for connecting to the API.
 func homepage(w http.ResponseWriter, r *http.Request) {
 	q := make(map[string]string)
 	q["message"] = "You reached the API! :)"
 	json.NewEncoder(w).Encode(q)
 }
 
+// myRouter : matching routes to function.
 func myRouter() {
 	r := mux.NewRouter().StrictSlash(true)
 	r.HandleFunc("/", homepage).Methods("GET", "OPTIONS")
@@ -29,11 +31,19 @@ func myRouter() {
 		handlers.AllowedOrigins([]string{"*"}))(r)))
 }
 
+// main : main function, where program launches.
 func main() {
+	
 	if !PROD {
 		fmt.Println("Dev API starting to run.")
 	}
+
 	connectDB()
+
+	if DBerr != nil {
+		fmt.Println(DBerr)
+		return
+	}
 
 	if !MigrationDone || (len(os.Args) > 1 && os.Args[1] == "migrate") {
 		err := migrate()
