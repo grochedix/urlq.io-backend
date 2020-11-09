@@ -1,9 +1,10 @@
-package main
+package settings
 
 import (
 	"net/http"
 	"strings"
 	"time"
+	"urlq/globals"
 )
 
 // RequestIP : matching an IP and its last request.
@@ -13,8 +14,8 @@ type RequestIP struct {
 	IP          string    `gorm:"uniqueIndex"`
 }
 
-// middleware : implementing middleware for the REST API.
-func middleware(h http.Handler) http.Handler {
+// Middleware : implementing middleware for the REST API.
+func Middleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !checkIPaddr(r) {
 			w.WriteHeader(429)
@@ -29,16 +30,16 @@ func checkIPaddr(r *http.Request) (access bool) {
 	ip := r.RemoteAddr
 	ip = ip[1:strings.Index(ip, "]")]
 	obj := RequestIP{IP: ip}
-	res := database.First(&obj)
+	res := globals.Database.First(&obj)
 	if res.RowsAffected == 0 {
-		database.Create(&obj)
+		globals.Database.Create(&obj)
 		access = true
 	} else {
 		if time.Now().Sub(obj.LastRequest) > 200*time.Millisecond {
 			access = true
 		}
 		obj.LastRequest = time.Now()
-		database.Save(&obj)
+		globals.Database.Save(&obj)
 	}
 	return access
 }

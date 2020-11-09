@@ -6,6 +6,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"urlq/globals"
+	"urlq/links"
+	"urlq/settings"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -22,9 +25,9 @@ func homepage(w http.ResponseWriter, r *http.Request) {
 func myRouter() {
 	r := mux.NewRouter().StrictSlash(true)
 	r.HandleFunc("/", homepage).Methods("GET", "OPTIONS")
-	r.Use(middleware)
-	r.HandleFunc("/link", createLink).Methods("POST", "OPTIONS")
-	r.HandleFunc("/link/{hash:-?[0-9a-z]+}", retrieveLink).Methods("GET", "OPTIONS")
+	r.Use(settings.Middleware)
+	r.HandleFunc("/link", links.CreateLink).Methods("POST", "OPTIONS")
+	r.HandleFunc("/link/{hash:-?[0-9a-z]+}", links.RetrieveLink).Methods("GET", "OPTIONS")
 	log.Fatal(http.ListenAndServe(":10000", handlers.CORS(handlers.AllowedHeaders(
 		[]string{"X-Requested-With", "Content-Type", "Authorization"}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
@@ -33,24 +36,24 @@ func myRouter() {
 
 // main : main function, where program launches.
 func main() {
-	
-	if !PROD {
+
+	if !globals.Prod {
 		fmt.Println("Dev API starting to run.")
 	}
 
-	connectDB()
+	settings.ConnectDB()
 
-	if DBerr != nil {
-		fmt.Println(DBerr)
+	if globals.DBerr != nil {
+		fmt.Println(globals.DBerr)
 		return
 	}
 
-	if !MigrationDone || (len(os.Args) > 1 && os.Args[1] == "migrate") {
-		err := migrate()
+	if !globals.MigrationDone || (len(os.Args) > 1 && os.Args[1] == "migrate") {
+		err := settings.Migrate()
 		if err != nil {
 			panic("Migration did not work.")
 		} else {
-			MigrationDone = true
+			globals.MigrationDone = true
 			fmt.Println("Migration done!")
 		}
 		return
