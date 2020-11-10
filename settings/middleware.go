@@ -25,7 +25,7 @@ func Middleware(h http.Handler) http.Handler {
 	})
 }
 
-// checkIPaddr: allow a request every 0.2 second for a same user.
+// checkIPaddr: allow a request every 0.15 second for a same user.
 func checkIPaddr(r *http.Request) (access bool) {
 	ip := r.RemoteAddr
 	ip = ip[1:strings.Index(ip, "]")]
@@ -35,7 +35,7 @@ func checkIPaddr(r *http.Request) (access bool) {
 		globals.Database.Create(&obj)
 		access = true
 	} else {
-		if time.Now().Sub(obj.LastRequest) > 200*time.Millisecond {
+		if time.Now().Sub(obj.LastRequest) > 150*time.Millisecond {
 			access = true
 		}
 		obj.LastRequest = time.Now()

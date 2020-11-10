@@ -1,3 +1,4 @@
 *.db
 *.exe
 *.code-workspace
+/tmp/
