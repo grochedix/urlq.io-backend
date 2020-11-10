@@ -15,7 +15,7 @@ import (
 // CreateQRCode : creates a QRCode for a link and send it in request.
 func CreateQRCode(w http.ResponseWriter, r *http.Request) {
 	lnk := links.Link{Hash: mux.Vars(r)["hash"]}
-	globals.Database.First(&lnk)
+	globals.Database.First(&lnk, "hash = ?", lnk.Hash)
 	pathImage := "./tmp/" + lnk.Hash + ".png"
 	_, err := os.Stat(pathImage)
 	if os.IsNotExist(err) {

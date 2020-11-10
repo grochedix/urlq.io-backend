@@ -26,10 +26,13 @@ func homepage(w http.ResponseWriter, r *http.Request) {
 func myRouter() {
 	r := mux.NewRouter().StrictSlash(true)
 	r.HandleFunc("/", homepage).Methods("GET", "OPTIONS")
-	r.Use(settings.Middleware)
 	r.HandleFunc("/image/{hash:-?[0-9a-zA-Z]+}", qrcodes.CreateQRCode).Methods("GET", "OPTIONS")
-	r.HandleFunc("/link", links.CreateLink).Methods("POST", "OPTIONS")
-	r.HandleFunc("/link/{hash:-?[0-9a-zA-Z]+}", links.RetrieveLink).Methods("GET", "OPTIONS")
+
+	link := r.PathPrefix("/link").Subrouter().StrictSlash(true)
+	link.Use(settings.Middleware)
+	link.HandleFunc("/", links.CreateLink).Methods("POST", "OPTIONS")
+	link.HandleFunc("/{hash:-?[0-9a-zA-Z]+}", links.RetrieveLink).Methods("GET", "OPTIONS")
+
 	log.Fatal(http.ListenAndServe(":10000", handlers.CORS(handlers.AllowedHeaders(
 		[]string{"X-Requested-With", "Content-Type", "Authorization"}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
