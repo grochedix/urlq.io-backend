@@ -12,7 +12,7 @@ import (
 	"github.com/skip2/go-qrcode"
 )
 
-// CreateQRCode : creates a QRCode for a link.
+// CreateQRCode : creates a QRCode for a link and send it in request.
 func CreateQRCode(w http.ResponseWriter, r *http.Request) {
 	lnk := links.Link{Hash: mux.Vars(r)["hash"]}
 	globals.Database.First(&lnk)
