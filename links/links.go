@@ -19,7 +19,7 @@ type Link struct {
 	ID        int       `gorm:"primaryKey;autoIncrement" json:"-"`
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"-"`
 	URL       string    `gorm:"unique" json:"url"`
-	Hash      string    `gorm:"unique" json:"hash"`
+	Hash      string    `gorm:"unique;uniqueIndex" json:"hash"`
 }
 
 // CreateLink : create a Link object and save it in the database
