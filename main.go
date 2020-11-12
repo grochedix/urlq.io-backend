@@ -33,7 +33,7 @@ func myRouter() {
 	link.HandleFunc("/", links.CreateLink).Methods("POST", "OPTIONS")
 	link.HandleFunc("/{hash:-?[0-9a-zA-Z]+}", links.RetrieveLink).Methods("GET", "OPTIONS")
 
-	log.Fatal(http.ListenAndServe(":10000", handlers.CORS(handlers.AllowedHeaders(
+	log.Fatal(http.ListenAndServe(":9999", handlers.CORS(handlers.AllowedHeaders(
 		[]string{"X-Requested-With", "Content-Type", "Authorization"}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
 		handlers.AllowedOrigins([]string{"*"}))(r)))

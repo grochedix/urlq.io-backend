@@ -1,0 +1,42 @@
+Dev API starting to run.
+Connecting to the database...
+OK!
+Dev API starting to run.
+Connecting to the database...
+OK!
+request: creation link
+request: creation link
+
+2020/11/11 23:23:16 [31;1m/home/ec2-user/GoAPI/links/links.go:33 [35;1mrecord not found
+[0m[33m[0.077ms] [34;1m[rows:0][0m SELECT * FROM `links` WHERE `links`.`url` = "https://stackoverflow.com/questions/" AND `links`.`hash` = "1t0qajmghn6yd" ORDER BY `links`.`id` LIMIT 1
+request: creation link
+request: creation link
+request: creation link
+Dev API starting to run.
+Connecting to the database...
+OK!
+Dev API starting to run.
+Connecting to the database...
+OK!
+request: creation link
+request: creation link
+request: creation link
+request: creation link
+request: creation link
+request: creation link
+request: creation link
+request: creation link
+request: retrieve link
+request: creation link
+request: creation link
+Dev API starting to run.
+Connecting to the database...
+OK!
+request: creation link
+
+2020/11/12 18:31:21 [31;1m/home/ec2-user/GoAPI/links/links.go:33 [35;1mrecord not found
+[0m[33m[0.085ms] [34;1m[rows:0][0m SELECT * FROM `links` WHERE `links`.`url` = "https://dev.to/pluralsight/building-a-go-web-api-with-the-new-digital-ocean-app-platform-5bl5" AND `links`.`hash` = "-oat4mzkog9d8" ORDER BY `links`.`id` LIMIT 1
+request: creation link
+request: creation link
+request: creation link
+request: creation link
